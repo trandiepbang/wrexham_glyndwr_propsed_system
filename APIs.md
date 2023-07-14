@@ -2,12 +2,13 @@
 ###  POST /users/register
 This endpoint is used to create a new user. The request body should include the username, email, and password for the new user. 
 Request Body:
+```json
 {
     "username": "user1",
     "email": "user1@example.com",
     "password": "user1password"
 }
-
+```
 
 Response: A successful response would return a 201 status code along with a confirmation message or the created user data.
 
@@ -16,10 +17,13 @@ Response: A successful response would return a 201 status code along with a conf
 used to authenticate a user. The request body should contain the username (or email) and password of the user. Request Body:
 
 Request Body:
+```json
 { 
    "username": "user1", 
    "password": "user1password" 
 }
+```
+
 
 Response: A successful response would return a 200 status code along with an access token or user data.
 
