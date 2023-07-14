@@ -31,7 +31,9 @@ Response: A successful response would return a 200 status code along with an acc
 This endpoint is used when a user forgets their password. The request body should contain the email of the user. The server will then generate a reset token, save it in the database with an expiration time, and send it to the user's email.
 
 Request Body:
+```json
 { "email": "user1@example.com" }
+```
 
 Response: A successful response would return a 200 status code along with a confirmation message.
 
@@ -39,7 +41,9 @@ Response: A successful response would return a 200 status code along with a conf
 This endpoint is used to update the user's password. It should be used in combination with the reset token sent to the user's email. The request body should contain the new password.
 
 Request Body:
+```json
 { "password": "newPassword" }
+```
 
 Response: A successful response would return a 200 status code along with a confirmation message.
 
@@ -47,7 +51,9 @@ Response: A successful response would return a 200 status code along with a conf
 This endpoint is used to update the user's current location. The request body should contain the new currentLocation object which includes type and coordinates. 
 
 Request Body:
+```json
 { "currentLocation": { "type": "Point", "coordinates": [-0.1276474, 51.5072955] } }
+```
 
 Response: A successful response would return a 200 status code along with a confirmation message or the updated user data.
 
