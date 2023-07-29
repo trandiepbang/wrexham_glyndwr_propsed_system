@@ -124,3 +124,5 @@
 "location": Similar to the User Schema, this is an object that represents the geographical location where the crime incident occurred. It also contains "type" and "coordinates" fields representing a point in the 2D space.
 
 "occurred_at": This is a string in date-time format which records when the crime incident happened. The format would usually be an ISO 8601 date-time string like 'YYYY-MM-DDTHH:MM:SS'.
+
+"source" : Data can come from a public database or source of the database.
