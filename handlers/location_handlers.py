@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import users
 from jwt import DecodeError, ExpiredSignatureError
-import jwt
+from libs import jwt
 import os
 SECRET_KEY = os.environ.get('JWT_SECRETKEY', "!@#9012390123TRANDIEPBANGCUTIE" )
 
@@ -13,8 +13,7 @@ def update_location():
         return jsonify({"message": "Token is missing!"}), 401
 
     try:
-        # Decode the token
-        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        decoded_token = jwt.decode(token)
         user_id = decoded_token['user_id']
     except DecodeError:
         return jsonify({"message": "Invalid token!"}), 401

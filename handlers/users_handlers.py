@@ -1,14 +1,10 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-import jwt
 import datetime
-import os
-from libs import mongodb
 from models import users
 from flask import Blueprint, request, jsonify
-SECRET_KEY = os.environ.get('JWT_SECRETKEY', "!@#9012390123TRANDIEPBANGCUTIE" )
+from libs import jwt
 
 users_handlers = Blueprint('users_handlers', __name__)
-mongodb.initMongoDB()
 
 @users_handlers.route('/user', methods=['POST'])
 def create_user():
@@ -40,19 +36,7 @@ def login():
             'email': email,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=29)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload)
         return jsonify({"token": token})
     else:
         return jsonify({"message": "Password is incorrect!"}), 401
-    
-
-@users_handlers.route('/forgot', methods=['POST'])
-def forgot_password():
-    # This is a basic implementation. In a real-world scenario, you'd send a reset link to the user's email.
-    email = request.json['email']
-    found_user = users.User.objects(email=email).first()
-    if not found_user:
-        return jsonify({"message": "Email not found!"}), 404
-
-    # For demonstration purposes, we're just sending back a message.
-    return jsonify({"message": "Reset link sent to email!"})
