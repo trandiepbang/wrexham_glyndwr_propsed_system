@@ -1,11 +1,32 @@
 from flask import Blueprint, request, jsonify
+from models import users
+from jwt import DecodeError, ExpiredSignatureError
+import jwt
+import os
+SECRET_KEY = os.environ.get('JWT_SECRETKEY', "!@#9012390123TRANDIEPBANGCUTIE" )
 
 location_handlers = Blueprint('location_handlers', __name__)
 @location_handlers.route('/', methods=['POST'])
 def update_location():
-    # This is a basic implementation. In a real-world scenario, you'd send a reset link to the user's email.
-    currentLocation = request.json['currentLocation']
-    if currentLocation != None:
-        cord = currentLocation["coordinates"]
-        
-    return jsonify({"message": "Updated location"})
+    token = request.headers.get('Authorization')  # Assuming the token is sent in the Authorization header
+    if not token:
+        return jsonify({"message": "Token is missing!"}), 401
+
+    try:
+        # Decode the token
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except DecodeError:
+        return jsonify({"message": "Invalid token!"}), 401
+    except ExpiredSignatureError:
+        return jsonify({"message": "Token has expired!"}), 401
+
+    currentLocation = request.json.get('currentLocation')
+    if currentLocation:
+        cord = currentLocation.get("coordinates")
+        if cord:
+            # Update the user's currentLocation in the database
+            users.User.objects(id=user_id).update_one(set__currentLocation=currentLocation)
+            return jsonify({"message": "OK"})
+
+    return jsonify({"message": "Invalid location data"}), 400

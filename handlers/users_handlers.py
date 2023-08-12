@@ -35,11 +35,16 @@ def login():
         return jsonify({"message": "Email not found!"}), 404
 
     if check_password_hash(found_user['password'], password):
-        token = jwt.PyJWT().encode(payload={'email': email, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=29)}, key = SECRET_KEY)
+        payload = {
+            'user_id': str(found_user.id),  # Include user ID in the JWT payload
+            'email': email,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=29)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({"token": token})
     else:
         return jsonify({"message": "Password is incorrect!"}), 401
-
+    
 
 @users_handlers.route('/forgot', methods=['POST'])
 def forgot_password():
