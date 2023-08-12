@@ -5,13 +5,10 @@ import os
 from libs import mongodb
 from models import users
 from flask import Blueprint, request, jsonify
-
-users_handlers = Blueprint('users_handlers', __name__)
 SECRET_KEY = os.environ.get('JWT_SECRETKEY', "!@#9012390123TRANDIEPBANGCUTIE" )
 
+users_handlers = Blueprint('users_handlers', __name__)
 mongodb.initMongoDB()
-
-
 
 @users_handlers.route('/user', methods=['POST'])
 def create_user():
