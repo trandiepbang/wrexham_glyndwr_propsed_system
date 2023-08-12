@@ -9,4 +9,5 @@ class Incident(Document):
     incident_type = StringField(required=True)
     summary = StringField(required=True)
     location = EmbeddedDocumentField(Location, required=True)
+    source = StringField(required=False)
     occurred_at = DateTimeField(required=True)
