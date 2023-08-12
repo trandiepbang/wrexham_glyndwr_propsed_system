@@ -52,3 +52,24 @@ def update_incident(incident_id):
     incident.save()
 
     return jsonify({"message": "Incident updated successfully!"}), 200
+
+@incident_handlers.route('/nearby', methods=['GET'])
+def query_incidents():
+    # Get the coordinates and radius from the query parameters
+    latitude = float(request.args.get('lat'))
+    longitude = float(request.args.get('lon'))
+    radius_km = float(request.args.get('radius', 10))  # Default to 10km if not provided
+
+    distance_in_meters = radius_km * 1000
+
+    # Query for nearby incidents
+    nearby_incidents = crime.Incident.objects(
+        location__near=[longitude, latitude],
+        location__max_distance=distance_in_meters
+    )
+
+    # Convert the results to a list of dictionaries for JSON serialization
+    incidents_list = [{"description": i.description, "location": i.location} for i in nearby_incidents]
+
+    return jsonify(incidents_list)
+
