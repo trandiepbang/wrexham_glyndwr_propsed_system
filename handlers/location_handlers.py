@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from models import users
 from models import crime
 from jwt import DecodeError, ExpiredSignatureError
-from libs import jwt
+from libs import jwt, aws
 from datetime import datetime, timedelta
 
 def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=10):
@@ -29,12 +29,13 @@ def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=10):
         occurred_at__gte=start_date  # Assuming the date field in your collection is named 'date'
     )
 
-    print("Incidents ", nearby_incidents)
     count_incident = len(nearby_incidents)
     if count_incident >= threshold:
-        return 1, nearby_incidents
+        # Convert the results to a list of dictionaries for JSON serialization
+        incidents_list = [{"description": i.description, "location": i.location} for i in nearby_incidents]
+        return True, incidents_list
     else:
-        return 0, []
+        return False, []
 
 
 location_handlers = Blueprint('location_handlers', __name__)
@@ -58,8 +59,9 @@ def update_location():
         cord = currentLocation.get("coordinates")
         if cord:
             # Update the user's currentLocation in the database
-            isHighRisk = is_high_risk_area(cord[1], cord[0])
-            print("Is High Risk Area", isHighRisk)
+            isHighRisk, incidents_list = is_high_risk_area(cord[1], cord[0])
+            if isHighRisk:
+                aws.send_push_notification(incidents_list[:10], "arn:aws:sns:ap-southeast-1:296809142595:crime-notification")
             users.User.objects(id=user_id).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 
