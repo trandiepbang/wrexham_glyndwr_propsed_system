@@ -12,6 +12,7 @@ def send_push_notification(message, topic_arn, region_name='ap-southeast-1', acc
         Message=message
     )
     
+    print("send_push_notification response ", response)
     return response
 
 # # Usage

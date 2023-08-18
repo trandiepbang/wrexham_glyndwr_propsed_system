@@ -5,7 +5,7 @@ from jwt import DecodeError, ExpiredSignatureError
 from libs import jwt, aws
 from datetime import datetime, timedelta
 
-def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=10):
+def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=1):
     """
     Check if a given location is a high-risk area based on past incidents within a specific timeframe.
 
@@ -61,7 +61,8 @@ def update_location():
             # Update the user's currentLocation in the database
             isHighRisk, incidents_list = is_high_risk_area(cord[1], cord[0])
             if isHighRisk:
-                aws.send_push_notification(incidents_list[:10], "arn:aws:sns:ap-southeast-1:296809142595:crime-notification")
+                # incidents_list[:10]
+                aws.send_push_notification("incident list ", "arn:aws:sns:ap-southeast-1:296809142595:crime-notification")
             users.User.objects(id=user_id).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 
