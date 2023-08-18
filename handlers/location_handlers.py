@@ -23,16 +23,18 @@ def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=10):
     start_date = datetime.now() - timedelta(days=days)
 
     # Query for nearby incidents within the specified timeframe
-    nearby_incidents_count = crime.Incident.objects(
+    nearby_incidents = crime.Incident.objects(
         location__near=[longitude, latitude],
         location__max_distance=distance_in_meters,
-        occurred_at__gte=start_date
-    ).count()
+        occurred_at__gte=start_date  # Assuming the date field in your collection is named 'date'
+    )
 
-    if nearby_incidents_count >= threshold:
-        return 1  # High-risk area
+    print("Incidents ", nearby_incidents)
+    count_incident = len(nearby_incidents)
+    if count_incident >= threshold:
+        return 1, nearby_incidents
     else:
-        return 0  # Not a high-risk area
+        return 0, []
 
 
 location_handlers = Blueprint('location_handlers', __name__)
@@ -42,8 +44,9 @@ def update_location():
     if not token:
         return jsonify({"message": "Token is missing!"}), 401
 
+    print("Token ", token)
     try:
-        decoded_token = jwt.decode(token)
+        decoded_token = jwt.decode(token.replace("Bearer", ""))
         user_id = decoded_token['user_id']
     except DecodeError:
         return jsonify({"message": "Invalid token!"}), 401
@@ -55,7 +58,9 @@ def update_location():
         cord = currentLocation.get("coordinates")
         if cord:
             # Update the user's currentLocation in the database
-            users.User.objects(id=user_id).update_one(set__currentLocation=currentLocation)
+            isHighRisk = is_high_risk_area(cord[1], cord[0])
+            print("Is High Risk Area", isHighRisk)
+            users.User.objects(id=user_id).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 
     return jsonify({"message": "Invalid location data"}), 400
