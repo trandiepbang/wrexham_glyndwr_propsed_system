@@ -39,21 +39,8 @@ def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=1):
 
 
 location_handlers = Blueprint('location_handlers', __name__)
-@location_handlers.route('/', methods=['POST'])
+@location_handlers.route('/update', methods=['POST'])
 def update_location():
-    token = request.headers.get('Authorization')  # Assuming the token is sent in the Authorization header
-    if not token:
-        return jsonify({"message": "Token is missing!"}), 401
-
-    print("Token ", token)
-    try:
-        decoded_token = jwt.decode(token.replace("Bearer", ""))
-        user_id = decoded_token['user_id']
-    except DecodeError:
-        return jsonify({"message": "Invalid token!"}), 401
-    except ExpiredSignatureError:
-        return jsonify({"message": "Token has expired!"}), 401
-
     currentLocation = request.json.get('currentLocation')
     if currentLocation:
         cord = currentLocation.get("coordinates")

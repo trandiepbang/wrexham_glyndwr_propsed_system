@@ -3,8 +3,28 @@ import datetime
 from models import users
 from flask import Blueprint, request, jsonify
 from libs import jwt
+import json
 
 users_handlers = Blueprint('users_handlers', __name__)
+
+def get_config():
+    try:
+        with open('config.json', 'r') as file:
+            config_data = json.load(file)
+            return config_data
+    except Exception as e:
+        print(f"Failed to read config.json: {e}")
+        raise e
+
+
+cfgFile = get_config()
+
+@users_handlers.route('/config', methods=['GET'])
+def get_config():
+    try:
+        return jsonify(cfgFile), 200
+    except Exception as e:
+        return jsonify({"message": "Failed to read configuration!"}), 500
 
 @users_handlers.route('/user', methods=['POST'])
 def create_user():
