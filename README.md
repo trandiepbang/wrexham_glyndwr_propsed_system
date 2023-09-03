@@ -13,7 +13,7 @@ docker run -d  -p 27017:27017  --name mongodb -v mongo-data:/data/db  -e MONGODB
 - If the location is high-risk, the Location Handler sends a push notification back to the Client.
 
 ### High Level Diagram
-![Alt text](image-1.png)
+![Alt text](image.png)
 
 ## MongoDB Diagram
 ### User 
