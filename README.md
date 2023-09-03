@@ -12,8 +12,8 @@ docker run -d  -p 27017:27017  --name mongodb -v mongo-data:/data/db  -e MONGODB
 - Location Handler updates the user's location in the Database.
 - If the location is high-risk, the Location Handler sends a push notification back to the Client.
 
-### Diagram
-
+### High Level Diagram
+![Alt text](image.png)
 
 ## MongoDB Diagram
 ### User 
