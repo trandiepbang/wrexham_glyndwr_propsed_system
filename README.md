@@ -4,6 +4,13 @@
 docker run -d  -p 27017:27017  --name mongodb -v mongo-data:/data/db  -e MONGODB_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_DATABASE=crime_db  -e MONGODB_INITDB_ROOT_PASSWORD=admin mongo:latest
 ```
 
+### ENVIRONMENT VARIABLES
+```shell
+JWT_SECRETKEY=@#9012390123TRANDIEPBANGCUTIE
+MONGO_URI=mongodb://admin:admin@localhost:27017/crime_db
+MONGO_DB=crime_db
+```
+
 ### Main flow Summary
 - Client sends a request to the API Gateway with location coordinates and a token.
 - API Gateway authenticates the request and forwards the user information and location to the Main App.
