@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import users
 from models import crime
-from jwt import DecodeError, ExpiredSignatureError
 from libs import jwt, aws
 from datetime import datetime, timedelta
 
