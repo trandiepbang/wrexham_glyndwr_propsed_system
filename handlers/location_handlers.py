@@ -4,6 +4,8 @@ from models import crime
 from libs import jwt, aws
 from datetime import datetime, timedelta
 
+sns_topic_arn = "arn:aws:sns:ap-southeast-1:296809142595:crime-notification"
+
 def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=1):
     """
     Check if a given location is a high-risk area based on past incidents within a specific timeframe.
@@ -52,7 +54,7 @@ def update_location():
             isHighRisk, incidents_list = is_high_risk_area(cord[1], cord[0])
             if isHighRisk:
                 # incidents_list[:10]
-                aws.send_push_notification("incident list ", "arn:aws:sns:ap-southeast-1:296809142595:crime-notification")
+                aws.send_push_notification(incidents_list, sns_topic_arn)
             users.User.objects(id=userId).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 
