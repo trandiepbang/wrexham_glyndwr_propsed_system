@@ -3,6 +3,8 @@ from models import users
 from models import crime
 from libs import jwt, aws
 from datetime import datetime, timedelta
+from config import *
+
 
 def is_high_risk_area(latitude, longitude, days=30, radius_km=1, threshold=1):
     """
@@ -55,7 +57,12 @@ def update_location():
             # Update the user's currentLocation in the database
             isHighRisk, incidents_list = is_high_risk_area(cord[1], cord[0])
             if isHighRisk:
-                aws.send_push_notification(incidents_list, founderUser.targetArn, "High Crime Alert")
+                aws.send_push_notification(incidents_list, 
+                                           founderUser.targetArn, 
+                                           "High Crime Alert", 
+                                           region_name=region_name, 
+                                           access_key=aws_access_key_id, 
+                                           secret_key=aws_secret_access_key)
             users.User.objects(id=userId).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 

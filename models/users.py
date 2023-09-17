@@ -6,4 +6,4 @@ class User(Document):
     resetPasswordToken = StringField()
     resetPasswordExpires = DateTimeField()
     currentLocation = PointField()
-    endpoint_arn = StringField()
+    targetArn = StringField()

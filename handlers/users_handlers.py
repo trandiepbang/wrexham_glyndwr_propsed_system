@@ -3,7 +3,9 @@ import datetime
 from models import users
 from flask import Blueprint, request, jsonify
 from libs import jwt
+from libs import aws
 import json
+from config import *
 
 users_handlers = Blueprint('users_handlers', __name__)
 
@@ -30,12 +32,18 @@ def get_config():
 def create_user():
     email = request.json['email']
     password = request.json['password']
+    fcm_token = request.json['fcm_token']
     hashed_password = generate_password_hash(password)
     found_user = users.User.objects(email=email).first()
     if found_user:
         return jsonify({"message": "Email already exists!"}), 400
 
-    user = users.User(email=email, password=hashed_password)
+    notification_token = aws.create_endpoint(fcm_token, 
+                                             region_name=region_name, 
+                                             access_key=aws_access_key_id, 
+                                             secret_key=aws_secret_access_key,
+                                             platform_application_arn=platform_application_arn)
+    user = users.User(email=email, password=hashed_password, targetArn=notification_token)
     user.save()
 
     return jsonify({"message": "User created successfully!"}), 201
