@@ -41,6 +41,10 @@ location_handlers = Blueprint('location_handlers', __name__)
 @location_handlers.route('/update', methods=['POST'])
 def update_location():
     currentLocation = request.json.get('currentLocation')
+    userId = request.headers.get("Current-User-ID", "")
+    if userId == "":
+        return jsonify({"message": "Invalid userID"}), 401
+    
     if currentLocation:
         cord = currentLocation.get("coordinates")
         if cord:
@@ -49,7 +53,7 @@ def update_location():
             if isHighRisk:
                 # incidents_list[:10]
                 aws.send_push_notification("incident list ", "arn:aws:sns:ap-southeast-1:296809142595:crime-notification")
-            users.User.objects(id=user_id).update_one(set__currentLocation=cord)
+            users.User.objects(id=userId).update_one(set__currentLocation=cord)
             return jsonify({"message": "OK"})
 
     return jsonify({"message": "Invalid location data"}), 400
