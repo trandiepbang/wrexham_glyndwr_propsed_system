@@ -6,7 +6,7 @@ docker run -d  -p 27017:27017  --name mongodb -v mongo-data:/data/db  -e MONGODB
 
 ### ENVIRONMENT VARIABLES
 ```shell
-JWT_SECRETKEY=@#9012390123TRANDIEPBANGCUTIE
+JWT_SECRETKEY=[JWT SECRET KEY]
 MONGO_URI=mongodb://admin:admin@localhost:27017/crime_db
 MONGO_DB=crime_db
 ```
