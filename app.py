@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 if __name__ == "__main__":
     app.register_blueprint(users_handlers.users_handlers, url_prefix='/v1/users')
-    app.register_blueprint(location_handlers.location_handlers, url_prefix='/v1/location')
     app.register_blueprint(incidents_handlers.incident_handlers, url_prefix='/v1/admin/incident')
 
     # Register error handlers

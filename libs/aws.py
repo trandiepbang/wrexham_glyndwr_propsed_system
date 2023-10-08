@@ -2,7 +2,7 @@ import boto3
 
 # Reference : https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns/client/create_platform_endpoint.html#create-platform-endpointhttps://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns/client/create_platform_endpoint.html#create-platform-endpoint
 
-def send_push_notification(message, target_arn, subject, region_name='ap-southeast-1', access_key='', secret_key=''):
+def pushDataIntoNotificationAmazonSNS(message, target_arn, subject, region_name='ap-southeast-1', access_key='', secret_key=''):
     sns_client = boto3.client('sns',
                               region_name=region_name,
                               aws_access_key_id=access_key,
@@ -14,10 +14,10 @@ def send_push_notification(message, target_arn, subject, region_name='ap-southea
         Subject=subject
     )
     
-    print("send_push_notification response ", response)
+    print("pushDataIntoNotificationAmazonSNS response ", response)
     return response
 
-def create_endpoint(token, region_name='ap-southeast-1', access_key='', secret_key='', platform_application_arn = ''):
+def storeLatestEndpointArn(token, region_name='ap-southeast-1', access_key='', secret_key='', platform_application_arn = ''):
     sns_client = boto3.client('sns', 
                        region_name=region_name,
                        aws_access_key_id=access_key,
